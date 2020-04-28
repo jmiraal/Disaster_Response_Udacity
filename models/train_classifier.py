@@ -50,8 +50,8 @@ labels = []
 def load_data(database_filepath):
     engine = db.create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql_table('messages', engine)
-    X = df[['message', 'genre']]
-    Y = df.drop(columns = ['id', 'message', 'original', 'genre']).values
+    X = df[['message', 'genre', 'len']]
+    Y = df.drop(columns = ['id', 'message', 'original', 'genre', 'len']).values
     labels = df.columns[4:-2]
     return X, Y, labels
 
@@ -293,7 +293,8 @@ def show_plot(df):
                      secondary_y = 'support',
                      use_index = True,
                      rot= 90,
-                     width = 0.8)
+                     width = 0.8
+                     )
     plt.show()
 
 
@@ -396,6 +397,14 @@ def save_model(model, model_filepath):
 def main():
     # check the correct number of arguments
     if len(sys.argv) == 3:
+        
+        models_num = ['1', '2']
+        models_name = ['LinearCSV', 'RandomForests']
+        model_option = ''
+        while not (model_option in models_num or model_option in models_name):
+            print('Choose a model to train:')
+            model_option = input('Type (LinearCSV(1) RandomForests(2)):\n')
+            
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
         # load the database data
@@ -403,23 +412,29 @@ def main():
         
         # split the data in train and test parts
         X_train_1, X_test_1, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
-        X_train = X_train_1.message.values
-        X_test = X_test_1.message.values
         
-        print('Building model...')
-        model_svc_gs = model_pipeline_svc_gs()
+        if (model_option == 'LinearCSV' or model_option == '1'):
+            print('Building model...')
+            X_train = X_train_1.message.values
+            X_test = X_test_1.message.values
+            model = model_pipeline_svc_gs()
+        elif (model_option == 'RandomForests' or model_option == '2'):
+            print('Building model...')
+            X_train = X_train_1.message.values
+            X_test = X_test_1.message.values
+            model = model_pipeline_rf_gs()
         
-        # fit and predict with the model defined in model_svc_gs
-        Y_pred = model_fit_pred(model_svc_gs, X_train, X_test, Y_train)
+        # fit and predict with the model
+        Y_pred = model_fit_pred(model, X_train, X_test, Y_train)
         
         # save and show in a plot the results for precision, recall, f1-score
-        results_svc_gs = display_results(Y_test, Y_pred, labels)
-        show_plot(results_svc_gs)
-        results_svc_gs.to_csv("results_svc_gs.csv", index=False)
+        results = display_results(Y_test, Y_pred, labels)
+        show_plot(results)
+        results.to_csv("results.csv", index=False)
         
         # save the model in a fil to used it later
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
-        save_model(model_svc_gs, model_filepath)
+        save_model(model, model_filepath)
 
         print('Trained model saved!')
 
