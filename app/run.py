@@ -15,6 +15,7 @@ from pandas.api.types import CategoricalDtype
 from matplotlib import pyplot as plt
 import seaborn as sns
 
+
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
@@ -66,6 +67,7 @@ def tokenize(text):
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('messages', engine)
+model_performanc_df = pd.read_csv('../models/results.csv')
 
 # load model
 model = joblib.load("../models/classifier_csv_gs.pkl")
@@ -80,9 +82,20 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    label_counts = df.iloc[:,4:-1].sum().sort_values(ascending = True)
+    label_names = list(label_counts.index)
+
+    mean_length = []
+    mean = 0
+    for label in label_names:
+        mean = df[df[label] == 1]['len'].mean()
+        mean_length.append(mean)
+
+    
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
+        # original graph number of messages by genre
         {
             'data': [
                 Bar(
@@ -100,11 +113,65 @@ def index():
                     'title': "Genre"
                 }
             }
+        },
+        # graph number of messages by label
+        {
+           'data': [
+                Bar(
+                    x=label_counts,
+                    y=label_names,
+                    orientation= 'h'
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Messages by Label',
+                'height': 800,
+                'yaxis': {
+                    'dtick': 1
+                },
+                'xaxis': {
+                    'title': "Count"
+                },
+                'margin': {
+                     'l': 150,
+                     'r': 0
+                }
+            }
+        },
+        
+        # graph mean length message by label
+        {
+           'data': [
+                Bar(
+                    x=mean_length,
+                    y=label_names,
+                    orientation= 'h'
+                )
+            ],
+
+            'layout': {
+                 'height': 800,
+                'title': 'Mean Length of Messages by Label',
+                'yaxis': {
+                    'dtick': 1
+                },
+                'xaxis': {
+                    'title': "Mean Length (chars)"
+                },
+                'margin': {
+                     'l': 150,
+                     'r': 0
+                }
+
+            }
         }
     ]
     
+    
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
+    print(ids)
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
     # render web page with plotly graphs
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
