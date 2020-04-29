@@ -391,7 +391,7 @@ def save_model(model, model_filepath):
     ''' 
     Saving model's best_estimator_ using pickle
     '''
-    pickle.dump(model.get_params(), open(model_filepath, 'wb'))
+    pickle.dump(model, open(model_filepath, 'wb'))
 
 
 def main():
