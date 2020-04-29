@@ -2,14 +2,52 @@ import json
 import plotly
 import pandas as pd
 
-from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
+import nltk
+from nltk.corpus import stopwords
+nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
+
+import re
+import time
+import numpy as np
+from pandas.api.types import CategoricalDtype
+from matplotlib import pyplot as plt
+import seaborn as sns
 
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
 from sklearn.externals import joblib
+import sqlalchemy as db
 from sqlalchemy import create_engine
+
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+
+from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV
+
+from sklearn.datasets import make_multilabel_classification
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import OneHotEncoder
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.linear_model import SGDClassifier
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import LinearSVC
+
+from sklearn.pipeline import Pipeline, FeatureUnion
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+
+import pickle
 
 
 app = Flask(__name__)
@@ -26,12 +64,11 @@ def tokenize(text):
     return clean_tokens
 
 # load data
-engine = create_engine('sqlite:///../data/YourDatabaseName.db')
-df = pd.read_sql_table('YourTableName', engine)
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
+df = pd.read_sql_table('messages', engine)
 
 # load model
-model = joblib.load("../models/your_model_name.pkl")
-
+model = joblib.load("../models/classifier_csv_gs.pkl")
 
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
@@ -69,7 +106,6 @@ def index():
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
-    
     # render web page with plotly graphs
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
 
@@ -93,7 +129,7 @@ def go():
 
 
 def main():
-    app.run(host='0.0.0.0', port=3001, debug=True)
+    app.run(host='127.0.0.1', port=3001, debug=True)
 
 
 if __name__ == '__main__':
