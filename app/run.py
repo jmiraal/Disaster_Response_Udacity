@@ -68,7 +68,9 @@ def tokenize(text):
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('messages', engine)
+
 model_performance_df = pd.read_csv('../models/results.csv')
+model_performance_df.label = model_performance_df.label.str.replace('_', ' ').str.title()
 
 model_performance_df_0 = model_performance_df[model_performance_df.value == 0]
 model_performance_df_1 = model_performance_df[model_performance_df.value == 1]
@@ -129,7 +131,7 @@ def index():
            'data': [
                 Bar(
                     x=label_counts,
-                    y=label_names,
+                    y=[s.replace('_', ' ').title() for s in label_names],
                     orientation= 'h'
                 )
             ],
@@ -155,7 +157,7 @@ def index():
            'data': [
                 Bar(
                     x=mean_length,
-                    y=label_names,
+                    y=[s.replace('_', ' ').title() for s in label_names],
                     orientation= 'h'
                 )
             ],
