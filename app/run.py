@@ -67,10 +67,10 @@ def tokenize(text):
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('messages', engine)
-model_performanc_df = pd.read_csv('../models/results.csv')
+
 
 # load model
-model = joblib.load("../models/classifier_csv_gs.pkl")
+model = joblib.load("../models/classifier.pkl")
 
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
@@ -168,10 +168,9 @@ def index():
         }
     ]
     
-    
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
-    print(ids)
+
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
     # render web page with plotly graphs
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
