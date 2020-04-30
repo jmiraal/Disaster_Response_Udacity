@@ -3,12 +3,6 @@ import plotly
 
 import pandas as pd
 
-import nltk
-from nltk.corpus import stopwords
-nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
-nltk.download('maxent_ne_chunker')
-nltk.download('words')
-
 import re
 import time
 import numpy as np
@@ -17,42 +11,23 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 from plotly.graph_objs import Bar
 
-
 from flask import Flask
 from flask import render_template, request, jsonify
 from sklearn.externals import joblib
 import sqlalchemy as db
 from sqlalchemy import create_engine
 
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
 
-from sklearn.metrics import classification_report
-from sklearn.model_selection import GridSearchCV
-
-from sklearn.datasets import make_multilabel_classification
-from sklearn.multioutput import MultiOutputClassifier
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import OneHotEncoder
-
-from sklearn.model_selection import train_test_split
-
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.linear_model import SGDClassifier
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.svm import LinearSVC
-
-from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+import sys
+sys.path.insert(1, '../')
+from transformers.my_transformers import *
 
 import pickle
 
 
 app = Flask(__name__)
+
+
 
 def tokenize(text):
     '''
