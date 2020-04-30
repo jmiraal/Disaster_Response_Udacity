@@ -55,7 +55,7 @@ def load_data(database_filepath):
     engine = db.create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql_table('messages', engine)
     X = df[['message', 'genre', 'len']]
-    Y = df.drop(columns = ['id', 'message', 'original', 'genre', 'len']).values
+    Y = df.drop(columns = ['id', 'message', 'original', 'genre', 'len', 'lang']).values
     labels = df.columns[4:-2]
     return X, Y, labels
 
