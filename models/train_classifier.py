@@ -431,14 +431,14 @@ def main():
     if len(sys.argv) == 3:
         
         # we give the user the option to choose between two models
-        models_num = ['1', '2']
-        models_name = ['LinearCSV', 'RandomForests']
+        models_num = ['1', '2', '3']
+        models_name = ['LinearCSV', 'RandomForests', 'RandomForests_Complete']
         model_option = ''
         
         # ask user to choose a model to train
         while not (model_option in models_num or model_option in models_name):
             print('Choose a model to train:')
-            model_option = input('Type (LinearCSV(1) RandomForests(2)):\n')
+            model_option = input('Type (LinearCSV(1) RandomForests(2) RandomForests_Complete(3)):\n')
             
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
@@ -460,6 +460,11 @@ def main():
             X_train = X_train_1.message.values
             X_test = X_test_1.message.values
             model = model_pipeline_rf_gs()
+        elif (model_option == 'RandomForests_Complete' or model_option == '3'):
+            print('Building model...')
+            X_train = X_train_1
+            X_test = X_test_1
+            model = model_pipeline_rf_complete()
         
         # fit and predict with the model
         Y_pred = model_fit_pred(model, X_train, X_test, Y_train)
