@@ -192,7 +192,7 @@ def index():
             ],
 
             'layout': {
-                'title': 'Mean Length of Messages by Label',
+                'title': 'Original Messages Language Count',
                 'yaxis': {
                     'title': "Count",
                 },
