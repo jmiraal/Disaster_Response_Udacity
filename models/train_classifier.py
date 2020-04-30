@@ -48,6 +48,16 @@ import random
 labels = []
 
 def load_data(database_filepath):
+    '''
+    USAGE 
+           load the data that we'll use to train the model
+    INPUT
+           database_filepath: database with the messages to train the model       
+    OUTPUT
+           X: df with the columns with the featrues
+           Y: df with the columns with the response  
+           labels: list with names of the labels           
+    '''
     engine = db.create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql_table('messages', engine)
     X = df[['message', 'genre', 'len']]
@@ -57,6 +67,14 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    '''
+    USAGE 
+           clean and tokenize a message
+    INPUT
+           text: String we want to clean and tokenize       
+    OUTPUT
+           clean_tokens: list of tokens         
+    '''
     # patterns to detect url'sand users
     url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
     #hashtag_regex = '#[A-Za-z0-9]*'
@@ -259,7 +277,7 @@ def model_pipeline_svc_gs():
        Define a LinearSVC pipeline
     '''    
     pipeline = Pipeline([
-        ('vect', CountVectorizer(tokenizer=tokenize, max_features = 5000)),
+        ('vect', CountVectorizer(tokenizer=tokenize, max_features = None)),
         ('tfidf', TfidfTransformer()),
         ('multi_clf', MultiOutputClassifier(LinearSVC(C=1)))
     ])
@@ -280,11 +298,12 @@ def model_pipeline_rf_gs():
     
     
 def show_plot(df):
-    """
-    print different plots depending of the stat option
-    Args:
-    (int) stat_option - Main program option ("global", "trip table", "correlation", "percentage")
-    """
+    '''
+    USAGE:
+        print different plots depending of the stat option
+    INPUT:
+        df: dataframe with the information of precision, recall, f1-scores, etc.
+    '''
     aux_results = df[df.value == 1].sort_values(by = 'recall', 
                                                 ascending = False)
     aux_results = aux_results.set_index('label')
