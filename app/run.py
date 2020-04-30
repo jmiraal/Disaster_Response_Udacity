@@ -223,23 +223,34 @@ def index():
                 Bar(
                     x=model_performance_df_1.label,
                     y=model_performance_df_1.precision,
+                    yaxis='y',
                     offset = 0,
-                    width = 0.3,
+                    width = 0.23,
                     name = 'Precision',
                 ),
                 Bar(
                     x=model_performance_df_1.label,
                     y=model_performance_df_1.recall,
-                    offset = 0.3,
-                    width = 0.3,
+                    yaxis='y',
+                    offset = 0.23,
+                    width = 0.23,
                     name = 'Recall'
                 ),
                 Bar(
                     x=model_performance_df_1.label,
                     y=model_performance_df_1['f1-score'],
-                    offset = 0.6,
-                    width = 0.3,
+                    yaxis='y',
+                    offset = 0.46,
+                    width = 0.23,
                     name = 'F1-Score'
+                ),
+                Bar(
+                    x=model_performance_df_1.label,
+                    y=model_performance_df_1.support,
+                    yaxis='y2',
+                    offset = 0.69,
+                    width = 0.23,
+                    name = 'Count Messages'
                 )
             ],
 
@@ -248,13 +259,26 @@ def index():
                 'yaxis': {
                     'title': "%"
                 },
+                'yaxis2': {
+                'title': 'Nº of Messages', 'overlaying': 'y', 'side': 'right'
+                },
                 'xaxis': {
                     'title': "Categories"
                 },
                 'margin': {
                      'u': 0,
                      'b': 150
-                }
+                },
+                'legend': {
+		            'orientation': "v",
+		            'x': 1.1,
+                    'xanchor': 'left',
+		            'y': 1,
+		            'font': {
+                    'size': 9
+                    },
+		        'borderwidth': 1
+                },
             }
         },
         
@@ -265,23 +289,34 @@ def index():
                 Bar(
                     x=model_performance_df_0.label,
                     y=model_performance_df_0.precision,
+                    yaxis='y',
                     offset = 0,
-                    width = 0.3,
+                    width = 0.23,
                     name = 'Precision',
                 ),
                 Bar(
                     x=model_performance_df_0.label,
                     y=model_performance_df_0.recall,
-                    offset = 0.3,
-                    width = 0.3,
+                    yaxis='y',
+                    offset = 0.23,
+                    width = 0.23,
                     name = 'Recall'
                 ),
                 Bar(
                     x=model_performance_df_0.label,
                     y=model_performance_df_0['f1-score'],
-                    offset = 0.6,
-                    width = 0.3,
+                    yaxis='y',
+                    offset = 0.46,
+                    width = 0.23,
                     name = 'F1-Score'
+                ),
+                Bar(
+                    x=model_performance_df_0.label,
+                    y=model_performance_df_0.support,
+                    yaxis='y2',
+                    offset = 0.69,
+                    width = 0.23,
+                    name = 'Count Messages'
                 )
             ],
 
@@ -290,13 +325,26 @@ def index():
                 'yaxis': {
                     'title': "%"
                 },
+                'yaxis2': {
+                'title': 'Nº of Messages', 'overlaying': 'y', 'side': 'right'
+                },
                 'xaxis': {
                     'title': "Categories"
                 },
                 'margin': {
                      'u': 0,
                      'b': 150
-                }
+                },
+                'legend': {
+		            'orientation': "v",
+		            'x': 1.1,
+                    'xanchor': 'left',
+		            'y': 1,
+		            'font': {
+                    'size': 9
+                    },
+		        'borderwidth': 1
+                },
             }
         }
     ]
