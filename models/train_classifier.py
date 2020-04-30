@@ -250,7 +250,7 @@ def model_pipeline_rf_complete():
                          )
              
                    ])),
-                 # genre features. OneHotEncoding of column genre
+                 # len features. OneHotEncoding of column genre
                    ('len_pipeline', Pipeline([
                        ('selector', ColumnSelector(column="len")),
                        ('reshape', Reshape_Array()),
@@ -304,9 +304,14 @@ def show_plot(df):
     INPUT:
         df: dataframe with the information of precision, recall, f1-scores, etc.
     '''
+    # select when the label value is equal to 1 and prepare the dataframe to 
+    # draw a plot.
     aux_results = df[df.value == 1].sort_values(by = 'recall', 
                                                 ascending = False)
+                                                
     aux_results = aux_results.set_index('label')
+    
+    # It draws a barplot with the results of the training
     aux_results.plot(kind= 'bar' ,
                      y = ['f1-score', 'recall', 'precision', 'support'],
                      secondary_y = 'support',
@@ -335,38 +340,51 @@ def display_results(y_test, y_pred, labels, printout = False):
     
     i= 0
     
+    # we can decied if we want the result in a printout or in a dataframe
     if printout == False:
         data = []
+        # we define an empty dataframe
         result = pd.DataFrame(columns = ['label', 'value', 'precision', 'recall', 'f1-score', 'support', 'accuracy'])
         for label in labels:
-        
+            # for each label we execute the function classification_report. 
+            # We ask for the result as a dictionary
             class_report = classification_report(y_test[:,i], y_pred[:,i], output_dict = True)
             
+            # prepare the information in a list to be saved into the result dataframe
+            # for value of the label 0
             data = [label , 0, 
                     class_report['0']['precision'], 
                     class_report['0']['recall'],
                     class_report['0']['f1-score'],
                     class_report['0']['support'], 
                     class_report['accuracy']]
-
+            # save the data into the result dataframe
             s = pd.Series(data, index=result.columns)
             result = result.append(s, ignore_index=True)
+            
+            # prepare the information in a list to be saved into the result dataframe
+            # for value of the label 1
             data = [label , 1, 
                     class_report['1']['precision'], 
                     class_report['1']['recall'],
                     class_report['1']['f1-score'],
                     class_report['1']['support'], 
                     class_report['accuracy']]
-
+            # save the data into the result dataframe
             s = pd.Series(data, index=result.columns)
             result = result.append(s, ignore_index=True)
             i += 1
+        # return a dataframe with the data of precision, recall, etc for all the labels
         return result
         
     else:
+        # if we want the result in a printout
         for label in labels:
+            # for each label we execute the function classification_report. 
+            # We ask for the result as a printout
             class_report = classification_report(y_test[:,i], y_pred[:,i])
             accuracy = (y_pred[:,i] == y_test[:,i]).mean()
+            # pirnt the information of each label
             print("Label: ", label)
             print("Confusion Matrix:\n", class_report)
             print("Accuracy:", accuracy)
@@ -387,6 +405,7 @@ def elapsed_time_decorator(func):
     return wrapper
 
 
+# execute the function below inside this decorator
 @elapsed_time_decorator
 def model_fit_pred(model, X_train, X_test, Y_train):
     '''
@@ -417,9 +436,12 @@ def main():
     # check the correct number of arguments
     if len(sys.argv) == 3:
         
+        # we give the user the option to choose between two models
         models_num = ['1', '2']
         models_name = ['LinearCSV', 'RandomForests']
         model_option = ''
+        
+        # ask user to choose a model to train
         while not (model_option in models_num or model_option in models_name):
             print('Choose a model to train:')
             model_option = input('Type (LinearCSV(1) RandomForests(2)):\n')
@@ -432,6 +454,8 @@ def main():
         # split the data in train and test parts
         X_train_1, X_test_1, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
         
+        # depending on the option selected by the user we train one moel or
+        # other
         if (model_option == 'LinearCSV' or model_option == '1'):
             print('Building model...')
             X_train = X_train_1.message.values
@@ -451,7 +475,7 @@ def main():
         show_plot(results)
         results.to_csv("results.csv", index=False)
         
-        # save the model in a fil to used it later
+        # save the model in a file to use it later
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
         save_model(model, model_filepath)
 
