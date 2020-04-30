@@ -1,5 +1,6 @@
 import json
 import plotly
+
 import pandas as pd
 
 import nltk
@@ -14,11 +15,11 @@ import numpy as np
 from pandas.api.types import CategoricalDtype
 from matplotlib import pyplot as plt
 import seaborn as sns
+from plotly.graph_objs import Bar
 
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar
 from sklearn.externals import joblib
 import sqlalchemy as db
 from sqlalchemy import create_engine
@@ -67,7 +68,16 @@ def tokenize(text):
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('messages', engine)
+model_performance_df = pd.read_csv('../models/results.csv')
 
+model_performance_df_0 = model_performance_df[model_performance_df.value == 0]
+model_performance_df_1 = model_performance_df[model_performance_df.value == 1]
+
+model_performance_df_0 = model_performance_df_0.sort_values(by = 'f1-score', 
+                                                            ascending = False)
+                                                        
+model_performance_df_1 = model_performance_df_1.sort_values(by = 'f1-score', 
+                                                            ascending = False)
 
 # load model
 model = joblib.load("../models/classifier.pkl")
@@ -165,8 +175,93 @@ def index():
                 }
 
             }
+        },
+        
+        
+        # model performance for value 1
+        {
+           'data': [
+                Bar(
+                    x=model_performance_df_1.label,
+                    y=model_performance_df_1.precision,
+                    offset = 0,
+                    width = 0.3,
+                    name = 'Precision',
+                ),
+                Bar(
+                    x=model_performance_df_1.label,
+                    y=model_performance_df_1.recall,
+                    offset = 0.3,
+                    width = 0.3,
+                    name = 'Recall'
+                ),
+                Bar(
+                    x=model_performance_df_1.label,
+                    y=model_performance_df_1['f1-score'],
+                    offset = 0.6,
+                    width = 0.3,
+                    name = 'F1-Score'
+                )
+            ],
+
+            'layout': {
+                'title': 'Classification Model Perfomance',
+                'yaxis': {
+                    'title': "%"
+                },
+                'xaxis': {
+                    'title': "Categories"
+                },
+                'margin': {
+                     'u': 0,
+                     'b': 150
+                }
+            }
+        },
+        
+        
+        # model performance for value 0
+        {
+           'data': [
+                Bar(
+                    x=model_performance_df_0.label,
+                    y=model_performance_df_0.precision,
+                    offset = 0,
+                    width = 0.3,
+                    name = 'Precision',
+                ),
+                Bar(
+                    x=model_performance_df_0.label,
+                    y=model_performance_df_0.recall,
+                    offset = 0.3,
+                    width = 0.3,
+                    name = 'Recall'
+                ),
+                Bar(
+                    x=model_performance_df_0.label,
+                    y=model_performance_df_0['f1-score'],
+                    offset = 0.6,
+                    width = 0.3,
+                    name = 'F1-Score'
+                )
+            ],
+
+            'layout': {
+                'title': 'Classification Model Perfomance',
+                'yaxis': {
+                    'title': "%"
+                },
+                'xaxis': {
+                    'title': "Categories"
+                },
+                'margin': {
+                     'u': 0,
+                     'b': 150
+                }
+            }
         }
     ]
+
     
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
