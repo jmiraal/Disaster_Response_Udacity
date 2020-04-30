@@ -259,7 +259,7 @@ def model_pipeline_svc_gs():
        Define a LinearSVC pipeline
     '''    
     pipeline = Pipeline([
-        ('vect', CountVectorizer(tokenizer=tokenize, max_features = 5000)),
+        ('vect', CountVectorizer(tokenizer=tokenize, max_features = None)),
         ('tfidf', TfidfTransformer()),
         ('multi_clf', MultiOutputClassifier(LinearSVC(C=1)))
     ])

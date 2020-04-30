@@ -94,8 +94,11 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
-    label_counts = df.iloc[:,4:-1].sum().sort_values(ascending = True)
+    label_counts = df.iloc[:,4:-2].sum().sort_values(ascending = True)
     label_names = list(label_counts.index)
+    
+    language_counts = df.groupby('lang').count()['message']
+    language_names = list(language_counts.index)
 
     mean_length = []
     mean = 0
@@ -174,6 +177,28 @@ def index():
                 'margin': {
                      'l': 150,
                      'r': 0
+                }
+
+            }
+        },
+        
+        # graph number of messages by language of origin
+        {
+           'data': [
+                Bar(
+                    x=language_names,
+                    y=language_counts,
+                )
+            ],
+
+            'layout': {
+                'title': 'Mean Length of Messages by Label',
+                'yaxis': {
+                    'title': "Count",
+                },
+                'xaxis': {
+                    'title': "Language",
+                    'dtick': 1
                 }
 
             }

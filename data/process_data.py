@@ -2,7 +2,7 @@ import sys
 import pandas as pd
 import numpy as np
 import sqlalchemy as db
-
+from langdetect import detect
 
 
 def load_data(messages_filepath, categories_filepath):
@@ -14,6 +14,24 @@ def load_data(messages_filepath, categories_filepath):
     df = messages_df.merge(categories_df, on=['id'])
     return df
 
+
+# detect the language of the message.
+def language_message(df):
+    langdet = []
+    for index, row in df.iterrows():
+
+        try:
+            language = detect(row.original)
+            print(language)
+        except e:
+            language = "unknown"
+            print(e)
+        langdet.append(language)
+    
+
+    lang = pd.Series(langdet)
+    df['lang'] = lang.values
+    return df    
 
 def clean_data(df):
     # create a dataframe of the 36 individual category columns
@@ -54,6 +72,7 @@ def clean_data(df):
     return df
 
 def save_data(df, database_filename):
+
     # open a connection with the database
     engine = db.create_engine('sqlite:///' + database_filename)
     connection = engine.connect()
@@ -74,6 +93,8 @@ def main():
 
         print('Cleaning data...')
         df = clean_data(df)
+        print('Detect language...')
+        df = language_message(df)
         
         print('Saving data...\n    DATABASE: {}'.format(database_filepath))
         save_data(df, database_filepath)
