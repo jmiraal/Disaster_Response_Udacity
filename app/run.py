@@ -207,7 +207,7 @@ def index():
             ],
 
             'layout': {
-                'title': 'Classification Model Perfomance',
+                'title': 'Classification Model Perfomance (Value = 1)',
                 'yaxis': {
                     'title': "%"
                 },
@@ -249,7 +249,7 @@ def index():
             ],
 
             'layout': {
-                'title': 'Classification Model Perfomance',
+                'title': 'Classification Model Perfomance (Value = 0)',
                 'yaxis': {
                     'title': "%"
                 },
