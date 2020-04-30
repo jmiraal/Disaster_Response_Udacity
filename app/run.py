@@ -77,12 +77,15 @@ def tokenize(text):
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('messages', engine)
 
+# read the model performance data
 model_performance_df = pd.read_csv('../models/results.csv')
 model_performance_df.label = model_performance_df.label.str.replace('_', ' ').str.title()
 
+# dataframes with the performance when label have the value 1 and value 0
 model_performance_df_0 = model_performance_df[model_performance_df.value == 0]
 model_performance_df_1 = model_performance_df[model_performance_df.value == 1]
 
+# sort dataframes with model performance in order to visualizations
 model_performance_df_0 = model_performance_df_0.sort_values(by = 'f1-score', 
                                                             ascending = False)
                                                         
@@ -103,16 +106,19 @@ def index():
            graphs rendered with plotly for the webpage master.html         
     '''
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
+    # extract data by genre of the messages
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    # extract number of messabes by label
     label_counts = df.iloc[:,4:-2].sum().sort_values(ascending = True)
     label_names = list(label_counts.index)
     
+    # extract number of messages by original language
     language_counts = df.groupby('lang').count()['message']
     language_names = list(language_counts.index)
-
+    
+    # extract mean lenght of messages by label
     mean_length = []
     mean = 0
     for label in label_names:
