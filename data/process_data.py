@@ -6,6 +6,15 @@ from langdetect import detect
 
 
 def load_data(messages_filepath, categories_filepath):
+    '''
+    USAGE 
+           load the data that we'll use to train the model
+    INPUT
+           messages_filepath: csv file with the messages
+           categories_filepath: csv file with the categories of the messages           
+    OUTPUT
+           df: dataframe with the information of the two files.           
+    '''
     # read messages file
     messages_df = pd.read_csv(messages_filepath)
     # read categories file
@@ -17,6 +26,16 @@ def load_data(messages_filepath, categories_filepath):
 
 # detect the language of the message.
 def language_message(df):
+    '''
+    USAGE 
+           uses langdetect to infere the language of the original message when
+           it is available
+    INPUT
+           df: dataframe with the messages, original messages, and all the data
+               extracted from the original files.           
+    OUTPUT
+           df: the same dataframe with an additional column with the language           
+    '''
     langdet = []
     for index, row in df.iterrows():
 
@@ -34,6 +53,21 @@ def language_message(df):
     return df    
 
 def clean_data(df):
+    '''
+    USAGE 
+           clean the data. 
+             - Save the information of categories in a column for
+           each category. 
+             - Drop duplicates.
+             - Drop categories without any message.
+             - Drop rows with related value = 2.
+             - Drop rows with messages shorter than 27 characters.
+    INPUT
+           df: dataframe with the messages, original messages, and all the data
+               extracted from the original files.           
+    OUTPUT
+           df: the same dataframe with the cleaned data.           
+    '''
     # create a dataframe of the 36 individual category columns
     categories = df.categories.str.split(pat = ';', expand = True)
     # select the first row of the categories dataframe
@@ -72,7 +106,14 @@ def clean_data(df):
     return df
 
 def save_data(df, database_filename):
-
+    '''
+    USAGE 
+           Save the dataframe data into a SQLite database
+    INPUT
+           df: data we want to save.  
+           database_filename: file name of the databese where we wanto to save
+             the data.                      
+    '''
     # open a connection with the database
     engine = db.create_engine('sqlite:///' + database_filename)
     connection = engine.connect()
