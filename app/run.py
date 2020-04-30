@@ -55,6 +55,14 @@ import pickle
 app = Flask(__name__)
 
 def tokenize(text):
+    '''
+    USAGE 
+           clean and tokenize a message
+    INPUT
+           text: String we want to clean and tokenize       
+    OUTPUT
+           clean_tokens: list of tokens         
+    '''
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -84,11 +92,16 @@ model_performance_df_1 = model_performance_df_1.sort_values(by = 'f1-score',
 # load model
 model = joblib.load("../models/classifier.pkl")
 
-# index webpage displays cool visuals and receives user input text for model
+
 @app.route('/')
 @app.route('/index')
 def index():
-    
+    '''
+    USAGE 
+           index webpage displays cool visuals and receives user input text for model      
+    OUTPUT
+           graphs rendered with plotly for the webpage master.html         
+    '''
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
@@ -108,7 +121,6 @@ def index():
 
     
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         # original graph number of messages by genre
         {
@@ -298,9 +310,15 @@ def index():
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
 
 
-# web page that handles user query and displays model results
+
 @app.route('/go')
 def go():
+    '''
+    USAGE 
+           web page that handles user query and displays model results      
+    OUTPUT
+           graphs rendered with plotly for the webpage go.html         
+    '''
     # save user input in query
     query = request.args.get('query', '') 
 
