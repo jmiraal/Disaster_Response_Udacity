@@ -1,32 +1,33 @@
-import json
-import plotly
-
-import pandas as pd
-
+# import basic librarys
 import re
 import time
 import numpy as np
+import pandas as pd
+import json
 from pandas.api.types import CategoricalDtype
-from matplotlib import pyplot as plt
-import seaborn as sns
+
+# import for visualizations
+import plotly
 from plotly.graph_objs import Bar
 
+# import Flask to render web app
 from flask import Flask
 from flask import render_template, request, jsonify
+
+# import joblib to load the machine learnign model
 from sklearn.externals import joblib
+
+# imports to load the data in the SQLite database
 import sqlalchemy as db
 from sqlalchemy import create_engine
 
-
+# import custom transformers
 import sys
 sys.path.insert(1, '../')
 from transformers.my_transformers import *
 
-import pickle
-
 
 app = Flask(__name__)
-
 
 
 def tokenize(text):

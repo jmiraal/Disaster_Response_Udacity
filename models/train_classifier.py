@@ -1,30 +1,26 @@
+# basic imports
 import json
-import plotly
-
-import pandas as pd
-
 import re
 import time
 import numpy as np
+import pandas as pd
 from pandas.api.types import CategoricalDtype
 from matplotlib import pyplot as plt
-import seaborn as sns
-from plotly.graph_objs import Bar
+import random
 
-from flask import Flask
-from flask import render_template, request, jsonify
-from sklearn.externals import joblib
+# import to load the data from a SQLite database
 import sqlalchemy as db
 from sqlalchemy import create_engine
 
-
+# imports of custom transformers
 import sys
 sys.path.insert(1, '../')
 from transformers.my_transformers import *
 
+# import to save the trained model into a file
 import pickle
 
-import random
+
 
 
 labels = []
