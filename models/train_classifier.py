@@ -14,7 +14,7 @@ from sqlalchemy import create_engine
 
 # imports of custom transformers
 import sys
-sys.path.insert(1, '../')
+sys.path.insert(1, './')
 from transformers.my_transformers import *
 
 # import to save the trained model into a file
