@@ -13,19 +13,13 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV
 
-from sklearn.datasets import make_multilabel_classification
 from sklearn.multioutput import MultiOutputClassifier
-from sklearn.multiclass import OneVsRestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import OneHotEncoder
 
 from sklearn.model_selection import train_test_split
 
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.linear_model import SGDClassifier
-from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import LinearSVC
 
 from sklearn.pipeline import Pipeline, FeatureUnion
