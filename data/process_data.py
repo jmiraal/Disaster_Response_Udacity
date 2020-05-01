@@ -41,10 +41,8 @@ def language_message(df):
 
         try:
             language = detect(row.original)
-            print(language)
-        except e:
+        except:
             language = "unknown"
-            print(e)
         langdet.append(language)
     
 
