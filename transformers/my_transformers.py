@@ -1,3 +1,4 @@
+import re
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 
@@ -25,6 +26,51 @@ from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
+
+
+class Tokenizer(BaseEstimator, TransformerMixin):
+    
+    def tokenize(text):
+        '''
+        USAGE 
+           clean and tokenize a message
+        INPUT
+           text: String we want to clean and tokenize       
+        OUTPUT
+           clean_tokens: list of tokens         
+        '''
+        # patterns to detect url'sand users
+        url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+        #hashtag_regex = '#[A-Za-z0-9]*'
+        user_regex = '(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)'
+    
+        # change urls by the word "urlplaceholder"
+        detected_urls = re.findall(url_regex, text)
+        for url in detected_urls:
+            text = text.replace(url, "urlplaceholder")
+    
+        detected_users = re.findall(user_regex, text)
+        for users in detected_users:
+            text = text.replace(users, "userplaceholder")
+    
+    
+        # replace all the chars not in a-z, A-Z or 0-9 by " "
+        text = re.sub(r"[^a-zA-Z0-9]", " ", text)
+    
+        # tokenize the text and drop the the stop words in Enghish
+        tokens = word_tokenize(text)
+        tokens = [w for w in tokens if w not in stopwords.words("english")]
+    
+        # initialize the lemmatizer
+        lemmatizer = WordNetLemmatizer()
+
+        # lemmatize each token and return a list of lower lematized tokens
+        clean_tokens = []
+        for tok in tokens:
+            clean_tok = lemmatizer.lemmatize(tok).lower().strip()
+            clean_tokens.append(clean_tok)
+
+        return clean_tokens
 
 
 class GPEExtractor(BaseEstimator, TransformerMixin):

@@ -44,49 +44,6 @@ def load_data(database_filepath):
     return X, Y, labels
 
 
-def tokenize(text):
-    '''
-    USAGE 
-           clean and tokenize a message
-    INPUT
-           text: String we want to clean and tokenize       
-    OUTPUT
-           clean_tokens: list of tokens         
-    '''
-    # patterns to detect url'sand users
-    url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
-    #hashtag_regex = '#[A-Za-z0-9]*'
-    user_regex = '(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)'
-    
-    # change urls by the word "urlplaceholder"
-    detected_urls = re.findall(url_regex, text)
-    for url in detected_urls:
-        text = text.replace(url, "urlplaceholder")
-    
-    detected_users = re.findall(user_regex, text)
-    for users in detected_users:
-        text = text.replace(users, "userplaceholder")
-    
-    
-    # replace all the chars not in a-z, A-Z or 0-9 by " "
-    text = re.sub(r"[^a-zA-Z0-9]", " ", text)
-    
-    # tokenize the text and drop the the stop words in Enghish
-    tokens = word_tokenize(text)
-    tokens = [w for w in tokens if w not in stopwords.words("english")]
-    
-    # initialize the lemmatizer
-    lemmatizer = WordNetLemmatizer()
-
-    # lemmatize each token and return a list of lower lematized tokens
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
-
-    return clean_tokens
-
-
 
 
 def model_pipeline_rf_complete():
@@ -105,7 +62,7 @@ def model_pipeline_rf_complete():
                  # tfidf features over column message
                  ('text_pipeline', Pipeline([
                      ("selector", ColumnSelector(column="message")),
-                     ('vect', CountVectorizer(tokenizer=tokenize, max_features = 5000)),
+                     ('vect', CountVectorizer(tokenizer=Tokenizer.tokenize, max_features = 5000)),
                      ('tfidf', TfidfTransformer())
                      ])
                   ),
@@ -147,7 +104,7 @@ def model_pipeline_svc_gs():
        Define a LinearSVC pipeline
     '''    
     pipeline = Pipeline([
-        ('vect', CountVectorizer(tokenizer=tokenize, max_features = None)),
+        ('vect', CountVectorizer(tokenizer=Tokenizer.tokenize, max_features = None)),
         ('tfidf', TfidfTransformer()),
         ('multi_clf', MultiOutputClassifier(LinearSVC(C=1)))
     ])
@@ -160,7 +117,7 @@ def model_pipeline_rf_gs():
        Define a Random Forests pipeline
     '''
     pipeline = Pipeline([
-        ('vect', CountVectorizer(tokenizer=tokenize, max_features = 5000)),
+        ('vect', CountVectorizer(tokenizer=Tokenizer.tokenize, max_features = 5000)),
         ('tfidf', TfidfTransformer()),
         ('multi_clf', MultiOutputClassifier(RandomForestClassifier(n_estimators=35, min_samples_split = 3)))
     ])
