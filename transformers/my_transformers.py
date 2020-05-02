@@ -27,9 +27,27 @@ from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
 
-
 class Tokenizer(BaseEstimator, TransformerMixin):
-    
+    '''
+       Tranformer to apply tokenization. We need include the function tokenize
+       into a class to be called inside the Heroku platoform. Then we implement
+       this tokeniztion inside the Pipeline in this way:
+       
+       (train_classifier.py)
+       .
+       .
+       from transformers.my_transformers import 
+       .
+       .
+       .
+       ('vect', CountVectorizer(tokenizer=Tokenizer.tokenize))
+       
+       As a local script we could have usee the function directly in the 
+       Pipeline, without the necessity of included it inside an class.
+       
+       ('vect', CountVectorizer(tokenizer=tokenize))
+       
+    '''
     def tokenize(text):
         '''
         USAGE 
