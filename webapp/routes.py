@@ -1,5 +1,5 @@
 # import basic librarys
-import re
+
 import time
 import numpy as np
 import pandas as pd
@@ -26,28 +26,9 @@ import sys
 sys.path.insert(1, './')
 from transformers.my_transformers import *
 
+from webapp import app
+#app = Flask(__name__)
 
-app = Flask(__name__)
-
-
-def tokenize(text):
-    '''
-    USAGE 
-           clean and tokenize a message
-    INPUT
-           text: String we want to clean and tokenize       
-    OUTPUT
-           clean_tokens: list of tokens         
-    '''
-    tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
-
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
-
-    return clean_tokens
 
 # load data
 engine = create_engine('sqlite:///./data/DisasterResponse.db')
@@ -68,8 +49,9 @@ model_performance_df_0 = model_performance_df_0.sort_values(by = 'f1-score',
 model_performance_df_1 = model_performance_df_1.sort_values(by = 'f1-score', 
                                                             ascending = False)
 
+
 # load model
-#model = joblib.load("./models/classifier.pkl")
+model = joblib.load("./models/classifier.pkl")
 
 
 @app.route('/')
@@ -362,5 +344,3 @@ def go():
         query=query,
         classification_result=classification_results
     )
-
-
