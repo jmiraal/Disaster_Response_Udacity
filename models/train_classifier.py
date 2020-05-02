@@ -348,7 +348,7 @@ def main():
         # save and show in a plot the results for precision, recall, f1-score
         results = display_results(Y_test, Y_pred, labels)
         show_plot(results)
-        results.to_csv("./model/results.csv", index=False)
+        results.to_csv("./models/results.csv", index=False)
         
         # save the model in a file to use it later
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
