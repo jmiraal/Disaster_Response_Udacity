@@ -81,7 +81,7 @@ def index():
     mean = 0
     for label in label_names:
         mean = df[df[label] == 1]['len'].mean()
-        mean_length.append(mean)
+        mean_length.append(int(mean))
 
     
     # create visuals
