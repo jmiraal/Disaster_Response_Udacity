@@ -20,13 +20,22 @@ The application is ready to be runned into the Heroku platform. To be runned as 
 
 1. Run the following commands in the project's root directory to set up your database and model.
 
-    - To run ETL pipeline that cleans data and stores in database
+   - To run ETL pipeline that cleans data and stores in database
+    
         `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
-    - To run ML pipeline that trains classifier and saves
+        
+        
+        
+   - To run ML pipeline that trains classifier and saves
+    
         `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
 
+
 2. Run the following command in the app's directory to run your web app.
+
     `python webapp.py`
+    
+    
 
 3. Go to http://127.0.0.1:3001/
 
@@ -106,5 +115,10 @@ The analysis process can be summarized as:
 * In general we haven't acquaire a great improvement, but we have seen that normally Random Foreset is the model with best precision. This value is even better if we add the additional features we have mentioned besides the TFIDF.
 
 * On the other hand LinearSVC has showed the best results in terms of f1-score. We haven't seen important varitations adding the new features to the model.
+
+
+
+
+
 
 
